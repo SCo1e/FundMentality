@@ -1,0 +1,34 @@
+{
+    "compilerOptions": {
+        /*** Module Resolution & Output ***/
+        "target": "ES6", // JS version of the output
+        "module": "ESNext", // Use ES modules
+        "moduleResolution": "node", // Resolve modules like Node.js
+        "rootDir": "core", // Source folder
+        "outDir": "dist", // Build output folder
+        "baseUrl": "core", // Base path for absolute imports
+        "allowJs": true, // Allow compiling JS files alongside TS
+        /*** Strictness & Type Safety ***/
+        "strict": true, // Enable all strict type-checking options
+        "noUncheckedIndexedAccess": true, // Ensure array/object indexing checks for undefined
+        "forceConsistentCasingInFileNames": true, // Enforce consistent casing in imports
+        "allowSyntheticDefaultImports": true, // Allow default import syntax
+        /*** Source Maps & Debugging ***/
+        "sourceMap": true, // Generate .map files for debugging
+        "inlineSources": true, // Include TS source code in source maps
+        /*** JSX & React ***/
+        "jsx": "react-jsx", // JSX transformation for React
+        /*** Helpers & Module Isolation ***/
+        "importHelpers": true, // Use tslib helpers to reduce duplication
+        "isolatedModules": true, // Ensure each file can be transpiled in isolation
+        /*** Libraries ***/
+        "lib": [
+            "DOM",
+            "ESNext"
+        ] // Provide DOM and modern JS typings
+    },
+    "include": [
+        "core/**/*",
+        "test/**/*"
+    ]
+}
