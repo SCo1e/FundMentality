@@ -62,11 +62,11 @@ export abstract class AccountBase {
     balanceAsOf: Date = new Date();
 
     /**
-     * Constructs a new Account instance.
-     *  
-     * @param params - Parameters to initialize the account
-     * @throws Error if `accountNumber` is not exactly 4 digits
-     */
+      * Constructs a new Account instance.
+      *  
+      * @param params - Parameters to initialize the account
+      * @throws Error if `accountNumber` is not exactly 4 digits
+      */
     protected constructor(params: BaseAccountParams & { accountType: AccountTypes }) {
         this.id = crypto.randomUUID();
         this.name = params.name;
@@ -81,21 +81,17 @@ export abstract class AccountBase {
             );
         }
         this.accountNumber = params.accountNumber;
-
-        if (!this.transactionIds) { this.balance = 0 };
-
     }
-
 
     /**
      * Calculates the current balance of the account by summing the amounts
      * of the provided transactions.
-     *
+     * 
      * @param txIds - Array of transaction IDs to calculate balance for
      * @param txStore - Transaction store used to retrieve transaction objects
      * @returns Total balance as a number
      */
-    calculateBalance(txIds: string[], txStore: TransactionStorage): number {
+    calculateBalance(txIds: string[], txStore: TransactionStore): number {
         return txStore.getMany(txIds).reduce((sum, tx) => sum + tx.amount, 0);
     }
 
@@ -156,11 +152,5 @@ export abstract class AccountBase {
     removeRecurringEventId(eventId: string): void {
         this.recurringEventIds = this.recurringEventIds.filter(id => id !== eventId);
     }
-
-
-
-
-
-
-
 }
+
