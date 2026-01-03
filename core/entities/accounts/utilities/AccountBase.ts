@@ -2,6 +2,7 @@
 
 import { randomUUID } from "node:crypto";
 import { AccountTypes } from "./AccountTypes";
+import { TransactionStorage } from "storage/TransactionStorage";
 
 /**
  * Parameters required to create a base account.
@@ -59,6 +60,105 @@ export abstract class AccountBase {
 
     balance: number = 0;
     balanceAsOf: Date = new Date();
+
+    /**
+     * Constructs a new Account instance.
+     *  
+     * @param params - Parameters to initialize the account
+     * @throws Error if `accountNumber` is not exactly 4 digits
+     */
+    protected constructor(params: BaseAccountParams & { accountType: AccountTypes }) {
+        this.id = crypto.randomUUID();
+        this.name = params.name;
+        this.type = params.accountType;
+        this.institution = params.institution;
+        this.notes = params.notes;
+
+        // Validate account number format
+        if (!/^\d{4}$/.test(params.accountNumber)) {
+            throw new Error(
+                `accountNumber must be exactly 4 digits. Received: ${params.accountNumber}`
+            );
+        }
+        this.accountNumber = params.accountNumber;
+
+        if (!this.transactionIds) { this.balance = 0 };
+
+    }
+
+
+    /**
+     * Calculates the current balance of the account by summing the amounts
+     * of the provided transactions.
+     *
+     * @param txIds - Array of transaction IDs to calculate balance for
+     * @param txStore - Transaction store used to retrieve transaction objects
+     * @returns Total balance as a number
+     */
+    calculateBalance(txIds: string[], txStore: TransactionStorage): number {
+        return txStore.getMany(txIds).reduce((sum, tx) => sum + tx.amount, 0);
+    }
+
+    /**
+     * Adds a transaction ID to this account if it is not already included.
+     * 
+     * @param txId - Transaction ID to add
+     */
+    addTransactionId(txId: string): void {
+        if (!this.transactionIds.includes(txId)) {
+            this.transactionIds.push(txId);
+        }
+    }
+
+    /**
+     * Retrieves all transaction IDs associated with this account.
+     * 
+     * @returns Array of transaction IDs
+     */
+    getTransactionIds(): string[] {
+        return [...this.transactionIds];
+    }
+
+    /**
+     * Removes a transaction ID from the account's transaction list.
+     * 
+     * @param txId - Transaction ID to remove
+     */
+    removeTransactionId(txId: string): void {
+        this.transactionIds = this.transactionIds.filter(id => id !== txId);
+    }
+
+    /**
+     * Adds a recurring event ID to this account if it is not already included.
+     * 
+     * @param eventId - Recurring event ID to add
+     */
+    addRecurringEventId(eventId: string): void {
+        if (!this.recurringEventIds.includes(eventId)) {
+            this.recurringEventIds.push(eventId);
+        }
+    }
+
+    /**
+     * Retrieves all recurring event IDs associated with this account.
+     * 
+     * @returns Array of recurring event IDs
+     */
+    getRecurringEventIds(): string[] {
+        return [...this.recurringEventIds];
+    }
+
+    /**
+     * Removes a recurring event ID from the account's recurring event list.
+     * 
+     * @param eventId - Recurring event ID to remove
+     */
+    removeRecurringEventId(eventId: string): void {
+        this.recurringEventIds = this.recurringEventIds.filter(id => id !== eventId);
+    }
+
+
+
 
 
 
